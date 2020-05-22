@@ -1,0 +1,115 @@
+\documentclass[11pt a4paper]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{aligned-overset}
+\usepackage{subcaption}
+
+% partielle ableitungen
+\newcommand{\delr}{\partial_r}
+\newcommand{\deltheta}{\partial_\theta}
+\newcommand{\delphi}{\partial_\varphi}
+
+% elektrische feldkonstante
+\newcommand{\epsz}{\epsilon_0}
+% 1 / 4pi eps
+\newcommand{\kco}{\frac{1}{4\pi\epsilon_0}}
+
+% fancy header
+\usepackage{fancyhdr}
+\fancyhf{}
+% vspaces in den headern fuer Distanzen notwendig
+% linke Seite: Namen der Abgabegruppe
+\lhead{\textbf{Tahir Kamcili \\ Alfredo Manente \\ Luca Dietrich \\ Matthias Maile}\vspace{1.5cm}}
+% rechte Seite: Modul, Gruppe, Semester
+\rhead{\textbf{Numerische Mathematik für \\ Physiker und Ingenieure\\Sommersemester 2020}\vspace{1.5cm}}
+% Center: nr. des blattes
+\chead{\vspace{2.5cm}\huge{\textbf{4. Übungszettel}}}
+% benoetigt damit der eigentliche Text nicht in der Überschrift steckt
+
+% zum zeichnen tikz
+\usepackage{tikz}
+
+% fuer fabigen text
+\usepackage{xcolor}
+
+\begin{document}
+\section*{Aufgabe 4.2}
+a)
+\begin{align*}
+	P_4 \ni p(x) &= ax^4 + bx^3 + cx^2 + dx + e \\
+	\Rightarrow 
+	\int_{-1}^1 p(x) dx 
+	&= \int_{-1}^1 \left(ax^4 + bx^3 + cx^2 + dx + e\right) dx \\
+	% stammfunktion bilden
+	&= \left[\frac a5 x^5 + \frac b4 x^4 + \frac c3 x^3 + 
+	\frac d2 x + ex + f \right]_{-1}^1 \\
+	% einsetzen
+	&= \frac a5 1^5 + \frac b4 1^4 + \frac c3 1^3 + 
+	\frac d2 1^2 + e \cdot 1 + f - \left( 
+	\frac a5 (-1)^5 + \frac b4 (-1)^4 + \frac c3 (-1)^3 + 
+	\frac d2 (-1)i^2 + e \cdot (-1) + f \right) \\
+	% zur kuerzung umformen
+	&= \underbrace{\frac a5 + \frac a5}_{\frac{2a}{5}}
+	+ \underbrace{\frac b4 - \frac b4 }_{=0}
+	+ \underbrace{\frac c3  + \frac c3}_{\frac{2c}{3}}
+	+ \underbrace{\frac d2 - \frac  d2}_{=0}
+	+ \underbrace{e + e }_{2e}
+	+ \underbrace{f - f}_{=0} \\
+	% Kuerzen
+	&= \frac{2a}5 + \frac{2c}3 + 2e \\
+	% interpolations formel
+	\Rightarrow I_h(p_4) 
+	&= \frac19 \left( p_4(-1) + 8 p_4(-0.5) + 8 p_4(0.5) + p(1) \right)
+	\\
+	% einsetzen in formel fuer p
+	&= \frac19 \left( a - b + c - d + e \right)
+	+ \frac19 \left(\frac a{2} - b + 2c 
+	- 4d + 8e\right) 
+	+ \frac19 \left(\frac a{2} + b + 2c + 4d + 8e\right) \\
+	&+ \frac19 \left(a + b + c + d + e \right) \\
+	% kuerzen 
+	&= \frac29 a + \frac29 c + \frac29 e+ \frac a9 + \frac{16c}{9}
+	+ \frac{8e}{9} \\
+	% weiter kuerzen
+	&= \frac a3  + \frac {2c}{3} + 2e \\
+	% vergleiche
+	\Rightarrow I_h(p_4) &= \int_{-1}^1 p_4(x) \ dx 
+	- \frac{2a}{5} + \frac a3
+\end{align*}
+Aus dem Ergebnis wird deutlich, dass der Interpolationsfehler nur vom
+Leitkoeffizienten $a$ abhängt. Wenn $a=0$ wäre, würde der Fehler ebenfalls
+0 sein. Dann wäre allerdings $p_4 \notin P_4$.\\
+Somit wird mit der Formel kein $p_4 \in P_4$ präzise integriert.\\
+(Falls nur ein Polynom gesucht war: $p_4 = x^4$ wird nicht genau 
+integriert)
+\newline
+\vspace{0.5cm}
+\newline
+b) Wenn wir das Ergebnis aus a) angucken, lässt 
+sich erkennen, dass der Fehler 
+nur von $a$ abhängt:
+\[
+	I_h(p) - \int_{-1}^1 p(x) dx= \frac a3 - \frac{2a}{5}
+\]
+Da dieser Koeffizient bei einem $p \in P_3$ verschwinden muss, wird 
+jedes Polynom 3. Grades (oder niedriger) genau Integriert.
+\newline
+\vspace{0.5cm}
+\newline
+c) als Funktion kann man die Normalverteilung nehmen, wobei $\mu$ dem 
+Stützpunkt $x_j$ entspricht zu dem das Gewicht $a_j < 0$ gehört.
+\newline
+Wenn man dann die Standartabweichung $\sigma$ gegen 0 laufen lässt, geht
+gehen die Werte $f(x_k)_{k\neq j} \rightarrow 0$. Die Quadraturformel 
+verinfacht sich dann:
+\[
+	I_A^{(n)} (f) = \sum_{k=0}^n a_k f(x_k) \approx
+	a_0 \cdot 0 + a_1 \cdot 0 + \hdots + a_j \cdot f(x_j) + \hdots =
+	a_j \cdot f(x_j) < 0
+\]
+Das Integral über die Normalverteilung ist natürlich immer positiv.
+
+
+\end{document}
