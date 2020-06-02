@@ -34,6 +34,7 @@ A = @(n) gallery('tridiag', n, -2, 8, -2);
 b = @(n) [ones(floor(0.5 * n)+1, 1); 2 .* ones(floor(0.5 * n), 1)];
 
 B = A(3);
+g = gallery('tridiag', 3, -2, 8, -2)
 
-C = thomas_decompose(B);
-disp(C);
+B = thomas_decompose(g);
+disp(B);

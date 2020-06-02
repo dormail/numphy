@@ -24,22 +24,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-close all;
-clear all;
-
 function LR = thomas_decompose(A)
   	LR = A;
+	n = size(A,1);
 	% die ersten zwei eintraege sind trivial
 	%LR(1,1) = A(1,1);
 	%LR(1,2) = A(1,2);
 	% 2,3,...,n-1 mit einer for-schleife
-	for(i = 2:n)
-		% untere nebendiagonale festlegen
-		LR(i, i-1) = A(i, i-1) / LR(i,i);
+	for i = 2:(n-1) 
 		% diagonalelemente
 		LR(i,i) = A(i,i) - LR(i, i-1) / LR(i, i-1);
+		% untere nebendiagonale festlegen
+		LR(i, i-1) = A(i, i-1) / LR(i,i);
 		% obere nebendiagonale
-		LR(i, i+1) = A(i, i+1)
+		LR(i, i+1) = A(i, i+1);
 	end
-	LR = sparse(LR);
+	% n-te eintraege manuel
+	A(n,n) = A(n,n) - LR(n-1, n-2) * LR(n-1, n);
+	LR(n, n-1) = A(n, n-1) / A(n,n);
+	%LR = sparse(LR);
 end
