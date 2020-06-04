@@ -16,29 +16,20 @@
 %
 %
 % Uebungszettel-Nr: Blatt 6
-% Aufgabennummer:   6.1 a)
-% Program name:     thomas_decompose
+% Aufgabennummer:   6.1 b)
+% Program name:     backward_solve
 %
 % Program(version): Octave
 % OS:               Fedora 32 Workstation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function LR = thomas_decompose(A)
-	% die ersten zwei eintraege durchs kopieren der gesamten Matrix
-  	LR = A;
-	n = size(A,1);
-	% 2,3,...,n-1 mit einer for-schleife
-	for i = 2:(n-1) 
-		% untere nebendiagonale festlegen (gamma)
-		LR(i, i-1) = LR(i, i-1) / LR(i - 1,i - 1);
-		% diagonalelemente (alpha)
-		LR(i,i) = A(i,i) - LR(i, i-1) * LR(i-1,i);
-		% obere nebendiagonale (beta) ist gleich der oberen vorher
-		% wurde also durchs kopieren mitgenommen
+function x = backward_solve(LR, y)
+	x = y;
+	n = size(LR,1);
+	x(n) = y(n) / LR(n,n); % letztes element manuell
+	% alle weiteren elemente mit for schleife
+	for i = (n-1):1
+		x(i) = (y(i) - LR(i,i+1) * x(i+1)) / LR(i,i);
 	end
-	% n-te eintraege manuel
-	LR(n, n-1) = LR(n, n-1) / A(n-1,n-1);
-	LR(n,n) = A(n,n) - LR(n, n-1) * LR(n-1, n);
-	LR = sparse(LR);
 end
