@@ -7,15 +7,30 @@ function [x, numit] = my_gauss_seidel(A,b,x0,eps,maxit)
 	D = I .* A; % D = Diagonale
 	L = tril(A) - D; % L = unteres Dreieck
 
+	% damit B und c nicht immer berechnet werden müssen
 	B = I - inv(D + L) * A;
 	c = inv(D + L) * b;
-	x = x0;
-	iterator = 0;
 
-	for i = 1:maxit
+	% startwerte
+	x = x0;
+	numit = 0;
+
+	% relativer eingangsfehler
+	e0_rel = norm(A * x0 - b) / norm(x0);
+
+	for i = 1:maxit + 1
+		if i > maxit % warnung
+			warning('Maximum number of iterations reached');
+		end
 		x = B * x + c;
 
-		iterator = iterator + 1;
+		e = norm(A * x - b);
+
+		if e < eps * e0_rel % abbruch bei kleinem fehler
+			break;
+		end
+
+		numit = numit + 1;
 	end
 end
 
